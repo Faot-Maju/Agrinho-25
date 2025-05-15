@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hortas de Curitiba</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f8f8f8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #2D5530;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: #2D5530;
+        }
+
+        /* Modal Tabs */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .tab-title {
+            color: #2D5530;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .tab-content {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* Forms */
+        .form-section {
+            margin: 15px 0;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        textarea.form-input {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background-color: #4A7B4C;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* Map Section */
+        .map-section {
+            background-color: #f0ebe0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .search-button {
+            background-color: #4A7B4C;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 0 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .map-container {
+            height: 250px;
+            background-color: #e5e3df;
+            border-radius: 5px;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .map-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #2D5530;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .marker-1 { top: 50%; left: 25%; }
+        .marker-2 { top: 30%; left: 40%; }
+        .marker-3 { top: 45%; left: 60%; }
+        .marker-4 { top: 60%; left: 35%; }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .section-title {
+            width: 100%;
+            color: #2D5530;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .featured-garden {
+            flex: 1;
+            min-width: 300px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .garden-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .garden-location {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .garden-location img {
+            width: 15px;
+            height: 15px;
+        }
+
+        .garden-type {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .garden-status {
+            margin-bottom: 10px;
+        }
+
+        .detail-button {
+            display: inline-block;
+            background-color: #2D5530;
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* Info Sections */
+        .info-section {
+            background-color: #f0ebe0;
+            border-radius: 5px;
+            padding: 20px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .info-title {
+            color: #2D5530;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .info-content {
+            margin-bottom: 15px;
+        }
+
+        .more-link {
+            color: #2D5530;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Volunteer Form */
+        .volunteer-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Garden Gallery */
+        .garden-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .gallery-item {
+            flex: 1;
+            min-width: 250px;
+            height: 180px;
+            background-color: #e5e3df;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .main-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <img src="img/cwb hortas.png" alt="Logo Hortas de Curitiba">
+                <div>
+                    <div>HORTAS DE</div>
+                    <div>CURITIBA</div>
+                </div>
+            </a>
+            <nav class="nav-links">
+                <a onclick="openTab('sobre')">Sobre o projeto</a>
+                <a onclick="openTab('contato')">Contato</a>
+                <a onclick="openTab('enviar')">Envie sua horta</a>
+                <a onclick="openTab('parcerias')">Parcerias</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Modal para Sobre o Projeto -->
+    <div id="sobreModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeTab('sobre')">&times;</span>
+            <h2 class="tab-title">Sobre o Projeto</h2>
+            <div class="tab-content">
+                <p>O projeto "Hortas de Curitiba" nasceu da necessidade de conectar os moradores da cidade às iniciativas de agricultura urbana que estão surgindo em diversos bairros.</p>
+                <p>Nossa missão é mapear, divulgar e fortalecer as hortas comunitárias, escolares e urbanas da cidade, promovendo a sustentabilidade, segurança alimentar e qualidade de vida.</p>
+                <p>Acreditamos que as hortas urbanas são mais do que espaços de cultivo - são lugares de encontro, aprendizado e reconexão com a natureza em meio ao ambiente urbano.</p>
+                <h3 style="color: #2D5530; margin: 15px 0 10px 0;">Nossos objetivos:</h3>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li>Mapear todas as hortas urbanas de Curitiba</li>
+                    <li>Conectar voluntários aos projetos existentes</li>
+                    <li>Divulgar iniciativas de agricultura urbana</li>
+                    <li>Promover eventos e oficinas de capacitação</li>
+                    <li>Criar uma rede de apoio entre as hortas da cidade</li>
+                </ul>
+                <p>Este projeto é uma iniciativa independente que conta com o apoio de diversos parceiros e voluntários.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Contato -->
+    <div id="contatoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeTab('contato')">&times;</span>
+            <h2 class="tab-title">Entre em Contato</h2>
+            <div class="tab-content">
+                <p>Tem dúvidas, sugestões ou quer saber mais sobre o projeto Hortas de Curitiba? Entre em contato conosco!</p>
+                <div class="form-section">
+                    <form>
+                        <input type="text" class="form-input" placeholder="Nome completo">
+                        <input type="email" class="form-input" placeholder="E-mail">
+                        <input type="text" class="form-input" placeholder="Assunto">
+                        <textarea class="form-input" placeholder="Mensagem"></textarea>
+                        <button type="submit" class="submit-btn">Enviar mensagem</button>
+                    </form>
+                </div>
+                <p style="margin-top: 20px;">Você também pode nos encontrar nas redes sociais:</p>
+                <div style="margin-top: 10px;">
+                    <span style="margin-right: 15px;">Instagram: @hortasdecuritiba</span>
+                    <span>Facebook: /hortascuritiba</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Envie sua Horta -->
+    <div id="enviarModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeTab('enviar')">&times;</span>
+            <h2 class="tab-title">Cadastre sua Horta</h2>
+            <div class="tab-content">
+                <p>Você tem uma horta comunitária, escolar ou urbana em Curitiba? Cadastre-a em nosso mapa para que mais pessoas possam conhecer, visitar e apoiar sua iniciativa!</p>
+                <div class="form-section">
+                    <form>
+                        <input type="text" class="form-input" placeholder="Nome da horta">
+                        <input type="text" class="form-input" placeholder="Endereço completo">
+                        <input type="text" class="form-input" placeholder="Bairro">
+                        <select class="form-input">
+                            <option value="" disabled selected>Tipo de horta</option>
+                            <option value="comunitaria">Comunitária</option>
+                            <option value="escolar">Escolar</option>
+                            <option value="residencial">Residencial compartilhada</option>
+                            <option value="institucional">Institucional</option>
+                        </select>
+                        <textarea class="form-input" placeholder="Descreva um pouco sobre sua horta (história, o que é cultivado, como funciona)"></textarea>
+                        <div style="margin: 15px 0;">
+                            <p style="margin-bottom: 10px;">A horta aceita visitantes?</p>
+                            <label style="margin-right: 20px;">
+                                <input type="radio" name="visitors" value="sim"> Sim
+                            </label>
+                            <label>
+                                <input type="radio" name="visitors" value="nao"> Não
+                            </label>
+                        </div>
+                        <div style="margin: 15px 0;">
+                            <p style="margin-bottom: 10px;">A horta aceita voluntários?</p>
+                            <label style="margin-right: 20px;">
+                                <input type="radio" name="volunteers" value="sim"> Sim
+                            </label>
+                            <label>
+                                <input type="radio" name="volunteers" value="nao"> Não
+                            </label>
+                        </div>
+                        <input type="text" class="form-input" placeholder="Contato (e-mail ou telefone)">
+                        <button type="submit" class="submit-btn">Cadastrar horta</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Parcerias -->
+    <div id="parceriasModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeTab('parcerias')">&times;</span>
+            <h2 class="tab-title">Parcerias</h2>
+            <div class="tab-content">
+                <p>O projeto Hortas de Curitiba busca constantemente novas parcerias para fortalecer a rede de agricultura urbana na cidade.</p>
+                <h3 style="color: #2D5530; margin: 15px 0 10px 0;">Como você ou sua organização pode ser parceira:</h3>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li>Doação de insumos (sementes, mudas, ferramentas)</li>
+                    <li>Apoio técnico (agrônomos, biólogos, permacultores)</li>
+                    <li>Divulgação do projeto</li>
+                    <li>Cessão de espaços para eventos</li>
+                    <li>Apoio financeiro para manutenção do projeto</li>
+                </ul>
+                <p>Se você tem interesse em ser parceiro do Hortas de Curitiba, preencha o formulário abaixo:</p>
+                <div class="form-section">
+                    <form>
+                        <input type="text" class="form-input" placeholder="Nome da organização/empresa">
+                        <input type="text" class="form-input" placeholder="Nome do responsável">
+                        <input type="email" class="form-input" placeholder="E-mail">
+                        <input type="text" class="form-input" placeholder="Telefone">
+                        <textarea class="form-input" placeholder="Como você gostaria de contribuir com o projeto?"></textarea>
+                        <button type="submit" class="submit-btn">Enviar proposta</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <section class="map-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input" placeholder="Digite seu bairro ou CEP">
+                <button class="search-button" onclick="searchGardens()">Buscar Hortas</button>
+            </div>
+            
+            <div class="filter-container" style="margin: 10px 0 15px 0; display: flex; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center; background: white; padding: 5px 10px; border-radius: 5px;">
+                    <label style="margin-right: 5px;">Tipo:</label>
+                    <select id="typeFilter" style="border: none; background: transparent; padding: 3px;">
+                        <option value="todas">Todas</option>
+                        <option value="comunitaria">Comunitária</option>
+                        <option value="escolar">Escolar</option>
+                        <option value="residencial">Residencial</option>
+                        <option value="institucional">Institucional</option>
+                    </select>
+                </div>
+                
+                <div style="display: flex; align-items: center; background: white; padding: 5px 10px; border-radius: 5px;">
+                    <label style="margin-right: 5px;">Visitas:</label>
+                    <select id="visitsFilter" style="border: none; background: transparent; padding: 3px;">
+                        <option value="todas">Todas</option>
+                        <option value="abertas">Abertas</option>
+                        <option value="agendamento">Com agendamento</option>
+                        <option value="fechadas">Fechadas</option>
+                    </select>
+                </div>
+                
+                <div style="display: flex; align-items: center; background: white; padding: 5px 10px; border-radius: 5px;">
+                    <label style="margin-right: 5px;">Raio:</label>
+                    <select id="radiusFilter" style="border: none; background: transparent; padding: 3px;">
+                        <option value="1">1km</option>
+                        <option value="3" selected>3km</option>
+                        <option value="5">5km</option>
+                        <option value="10">10km</option>
+                    </select>
+                </div>
+                
+                <div style="display: flex; align-items: center; background: white; padding: 5px 10px; border-radius: 5px;">
+                    <label style="margin-right: 5px;">Cultivos:</label>
+                    <select id="cropsFilter" style="border: none; background: transparent; padding: 3px;">
+                        <option value="todos">Todos</option>
+                        <option value="hortalicas">Hortaliças</option>
+                        <option value="frutas">Frutas</option>
+                        <option value="medicinais">Medicinais</option>
+                        <option value="ornamentais">Ornamentais</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Resultados da busca -->
+            <div id="searchResults" style="display: none; margin-top: 20px;">
+                <h3 style="color: #2D5530; margin-bottom: 15px;">Resultados da busca</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 15px;" id="resultsContainer">
+                    <!-- Os resultados serão inseridos aqui via JavaScript --> 
+                </div>
+            </div>
+        </section>
+
+        <div class="main-content">
+            <h2 class="section-title">Destaques da Semana</h2>
+
+            <div class="featured-garden">
+                <h3 class="garden-title">Horta Comunitária do Jardim Botânico</h3>
+                <div class="garden-location">
+                    <img src="/api/placeholder/15/15" alt="Localização">
+                    <span>Jardim Botânico</span>
+                </div>
+                <div class="garden-type">Comunitária</div>
+                <div class="garden-status">Visitas abertas</div>
+                <div style="margin: 10px 0;">
+                    <span style="display: inline-block; margin-right: 5px; background: #f0ebe0; padding: 3px 8px; border-radius: 3px; font-size: 0.8rem;">Hortaliças</span>
+                    <span style="display: inline-block; margin-right: 5px; background: #f0ebe0; padding: 3px 8px; border-radius: 3px; font-size: 0.8rem;">Medicinais</span>
+                </div>
+                <a href="#" class="detail-button">Ver detalhes</a>
+            </div>
+
+            <div class="info-section">
+                <h3 class="info-title">Como funciona?</h3>
+                <div class="info-content">
+                    As hortas urbanas de Curitiba são espaços de cultivo que você pode visitar, plantar, doar, se voluntariar ou simplesmente conhecer projetos locais perto de você.
+                </div>
+                <a href="#" class="more-link">Ver mais</a>
+            </div>
+
+            <div class="info-section">
+                <h3 class="info-title">Seja voluntário!</h3>
+                <form class="volunteer-form">
+                    <input type="text" class="form-input" placeholder="Nome">
+                    <input type="text" class="form-input" placeholder="Bairro">
+                    <input type="text" class="form-input" placeholder="Disponibilidade">
+                    <button type="submit" class="submit-btn">Enviar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="garden-gallery">
+            <div class="gallery-item"></div>
+            <div class="gallery-item"></div>
+            <div class="gallery-item"></div>
+            <div class="gallery-item"></div>
+        </div>
+    </div>
+
+    <script>
+        // Funções para abrir e fechar as abas
+        function openTab(tabName) {
+            document.getElementById(tabName + 'Modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Previne rolagem quando modal está aberto
+        }
+
+        function closeTab(tabName) {
+            document.getElementById(tabName + 'Modal').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restaura rolagem
+        }
+
+        // Fechar modal quando clicar fora do conteúdo
+        window.onclick = function(event) {
+            const modals = document.getElementsByClassName('modal');
+            for (let i = 0; i < modals.length; i++) {
+                if (event.target == modals[i]) {
+                    modals[i].style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            }
+        }
+        
+        // Banco de dados de hortas de Curitiba
+        const gardens = [
+            {
+                id: 1,
+                name: "Horta Comunitária do Jardim Botânico",
+                location: "Jardim Botânico",
+                address: "R. Eng. Ostoja Roguski, s/n - Jardim Botânico",
+                type: "comunitaria",
+                visits: "abertas",
+                status: "Visitas abertas",
+                volunteers: true,
+                crops: ["hortalicas", "medicinais"],
+                image: "/api/placeholder/300/200"
+            },
+            {
+                id: 2,
+                name: "Horta Laelia Purpurata",
+                location: "Mercês",
+                address: "R. Jacarezinho, 1480 - Mercês",
+                type: "comunitaria",
+                visits: "agendamento",
+                status: "Visitas com agendamento",
+                volunteers: true,
+                crops: ["hortalicas", "frutas"],
+                image: "/api/placeholder/300/200"
+            },
+            {
+                id: 3,
+                name: "Horta Comunitária Cristo Rei",
+                location: "Cristo Rei",
+                address: "R. Mauá, 920 - Cristo Rei",
+                type: "comunitaria",
+                visits: "abertas",
+                status: "Visitas abertas",
+                volunteers: true,
+                crops: ["hortalicas", "medicinais"],
+                image: "/api/placeholder/300/200"
+            },
+            {
+                id: 4,
+                name: "Horta da Escola Municipal CEI Professor Lauro Esmanhoto",
+                location: "Xaxim",
+                address: "R. Emílio Bertolini, 958 - Xaxim",
+                type: "escolar",
+                visits: "agendamento",
+                status: "Visitas com agendamento",
+                volunteers: false,
+                crops: ["hortalicas", "ornamentais"],
+                image: "/api/placeholder/300/200"
+            },
+            {
+                id: 5,
+                name: "Horta Comunitária do Tatuquara",
+                location: "Tatuquara",
+                address: "R. Olivardo Konoroski Bueno, s/n - Tatuquara",
+                type: "comunitaria",
+                visits: "abertas",
+                status: "Visitas abertas",
+                volunteers: true,
+                crops: ["hortalicas", "frutas", "medicinais"],
+                image: "/api/placeholder/300/200"
+            },
+            {
+                id: 6,
+                name: "Horta do Cajuru",
+                location: "Cajuru",
+                address: "R. Teófilo Otoni, 40 - Cajuru",
+                type: "comunitaria",
+                visits: "abertas",
+                status: "Visitas abertas",
+                volunteers: true,
+                crops: ["hortalicas", "frutas"],
+                image: "/api/placeholder/300/200"
+            },
+            {
+                id: 7,
+                name: "Horta Comunitária Parque São Lourenço",
+                location: "São Lourenço",
+                address: "R. Mateus Leme, s/n - São Lourenço",
+                type: "comunitaria",
+                visits: "abertas",
+                status: "Visitas abertas",
+                volunteers: true,
+                crops: ["hortalicas", "medicinais", "frutas"],
+                image: "/api/placeholder/300/200"
+            },
+            {
+                id: 8,
+                name: "Horta Urbana UFPR - Campus Agrárias",
+                location: "Juvevê",
+                address: "R. dos Funcionários, 1540 - Juvevê",
+                type: "institucional",
+                visits: "agendamento",
+                status: "Visitas com agendamento",
+                volunteers: false,
+                crops: ["hortalicas", "medicinais", "ornamentais"],
+                image: "/api/placeholder/300/200"
+            },
+            {
+                id: 9,
+                name: "Horta do Bosque Gutierrez",
+                location: "Vista Alegre",
+                address: "R. Prof. Nivaldo Braga, s/n - Vista Alegre",
+                type: "comunitaria",
+                visits: "abertas",
+                status: "Visitas abertas",
+                volunteers: true,
+                crops: ["hortalicas", "frutas"],
+                image: "/api/placeholder/300/200"
+            },
+            {
+                id: 10,
+                name: "Horta Comunitária Vila Torres",
+                location: "Prado Velho",
+                address: "R. Aquelino Orestes Baglioli, s/n - Prado Velho",
+                type: "comunitaria",
+                visits: "abertas",
+                status: "Visitas abertas",
+                volunteers: true,
+                crops: ["hortalicas", "medicinais"],
+                image: "/api/placeholder/300/200"
+            },
+            {
+                id: 11,
+                name: "Horta Escolar Escola Municipal Marumbi",
+                location: "Uberaba",
+                address: "R. Carlos de Laet, 3240 - Uberaba",
+                type: "escolar",
+                visits: "agendamento",
+                status: "Visitas com agendamento",
+                volunteers: false,
+                crops: ["hortalicas", "ornamentais"],
+                image: "/api/placeholder/300/200"
+            },
+            {
+                id: 12,
+                name: "Horta Terapêutica Hospital de Clínicas",
+                location: "Centro",
+                address: "R. General Carneiro, 181 - Centro",
+                type: "institucional",
+                visits: "fechadas",
+                status: "Visitas fechadas",
+                volunteers: false,
+                crops: ["medicinais", "ornamentais"],
+                image: "/api/placeholder/300/200"
+            }
+        ];
+        
+        // Função para buscar hortas
+        function searchGardens() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilter').value;
+            const visitsFilter = document.getElementById('visitsFilter').value;
+            const cropsFilter = document.getElementById('cropsFilter').value;
+            
+            // Filtrar hortas
+            const filteredGardens = gardens.filter(garden => {
+                // Verificar texto de busca
+                const matchesSearch = searchInput === '' || 
+                                     garden.name.toLowerCase().includes(searchInput) ||
+                                     garden.location.toLowerCase().includes(searchInput) ||
+                                     garden.address.toLowerCase().includes(searchInput);
+                
+                // Verificar tipo de horta
+                const matchesType = typeFilter === 'todas' || garden.type === typeFilter;
+                
+                // Verificar visitas
+                const matchesVisits = visitsFilter === 'todas' || garden.visits === visitsFilter;
+                
+                // Verificar cultivos
+                const matchesCrops = cropsFilter === 'todos' || garden.crops.includes(cropsFilter);
+                
+                return matchesSearch && matchesType && matchesVisits && matchesCrops;
+            });
+            
+            // Exibir resultados
+            displayResults(filteredGardens);
+        }
+        
+        // Função para exibir os resultados
+        function displayResults(results) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const searchResults = document.getElementById('searchResults');
+            
+            // Limpar resultados anteriores
+            resultsContainer.innerHTML = '';
+            
+            if (results.length === 0) {
+                // Sem resultados
+                searchResults.style.display = 'block';
+                resultsContainer.innerHTML = '<p>Nenhuma horta encontrada com os critérios selecionados.</p>';
+            } else {
+                // Exibir resultados
+                searchResults.style.display = 'block';
+                
+                results.forEach(garden => {
+                    const gardenCard = document.createElement('div');
+                    gardenCard.className = 'featured-garden';
+                    gardenCard.style.flex = '1';
+                    gardenCard.style.minWidth = '300px';
+                    gardenCard.style.maxWidth = '350px';
+                    
+                    // Criar conteúdo do card
+                    gardenCard.innerHTML = `
+                        <h3 class="garden-title">${garden.name}</h3>
+                        <div class="garden-location">
+                            <img src="/api/placeholder/15/15" alt="Localização">
+                            <span>${garden.location}</span>
+                        </div>
+                        <div class="garden-type">${formatType(garden.type)}</div>
+                        <div class="garden-status">${garden.status}</div>
+                        <div style="margin: 10px 0;">
+                            <span style="display: inline-block; margin-right: 5px; background: #f0ebe0; padding: 3px 8px; border-radius: 3px; font-size: 0.8rem;">${formatCrops(garden.crops[0])}</span>
+                            ${garden.crops[1] ? `<span style="display: inline-block; margin-right: 5px; background: #f0ebe0; padding: 3px 8px; border-radius: 3px; font-size: 0.8rem;">${formatCrops(garden.crops[1])}</span>` : ''}
+                        </div>
+                        <a href="#" class="detail-button">Ver detalhes</a>
+                    `;
+                    
+                    resultsContainer.appendChild(gardenCard);
+                });
+            }
+        }
+        
+        // Função para formatar o tipo de horta
+        function formatType(type) {
+            const types = {
+                'comunitaria': 'Comunitária',
+                'escolar': 'Escolar',
+                'residencial': 'Residencial compartilhada',
+                'institucional': 'Institucional'
+            };
+            return types[type] || type;
+        }
+        
+        // Função para formatar os cultivos
+        function formatCrops(crop) {
+            const crops = {
+                'hortalicas': 'Hortaliças',
+                'frutas': 'Frutas',
+                'medicinais': 'Medicinais',
+                'ornamentais': 'Ornamentais'
+            };
+            return crops[crop] || crop;
+        }
+    </script>
+</body>
+</html>
